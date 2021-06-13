@@ -1,0 +1,39 @@
+name: Windows-RDP
+
+on: workflow_dispatch
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+    timeout-minutes: 9999
+
+    steps:
+    - name: Configuring Executables...
+      run: |
+        Invoke-WebRequest https://raw.githubusercontent.com/vital987/windows-rdp/main/Files/ngrok.exe -OutFile ngrok.exe
+        Invoke-WebRequest https://raw.githubusercontent.com/vital987/windows-rdp/main/Files/nssm.exe -OutFile nssm.exe
+        copy nssm.exe C:\Windows\System32
+        copy ngrok.exe C:\Windows\System32
+    - name: Configuring Ngrok...
+      run: .\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
+      env:
+        NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+    - name: Downloading Scripts...
+      run: |
+        Invoke-WebRequest https://raw.githubusercontent.com/vital987/windows-rdp/main/Files/ngrok.bat -OutFile ngrok.bat
+        Invoke-WebRequest https://raw.githubusercontent.com/vital987/windows-rdp/main/Files/main.bat -OutFile main.bat
+        Invoke-WebRequest https://raw.githubusercontent.com/vital987/windows-rdp/main/Files/loop.bat -OutFile loop.bat
+    - name: Configuring Ngrok...
+      run: start ngrok.bat
+    - name: Enabling RDP Access...
+      run: | 
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
+        Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+    - name: Getting RDP Ready...
+      run: |
+        sc start ngrok
+        cmd /c main.bat
+    - name: Advice, mount your personal drive to rdp to save your work.
+      run: cmd /c loop.bat 
