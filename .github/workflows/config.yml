@@ -11,8 +11,8 @@ jobs:
     steps:
     - name: Configuring Executables...
       run: |
-        Invoke-WebRequest https://raw.githubusercontent.com/vital987/windows-rdp/main/Files/ngrok.exe -OutFile ngrok.exe
-        Invoke-WebRequest https://raw.githubusercontent.com/vital987/windows-rdp/main/Files/nssm.exe -OutFile nssm.exe
+        Invoke-WebRequest https://raw.githubusercontent.com/vital987/Windows-RDP/master/Files/ngrok.exe -OutFile ngrok.exe
+        Invoke-WebRequest https://raw.githubusercontent.com/vital987/Windows-RDP/master/Files/nssm.exe -OutFile nssm.exe
         copy nssm.exe C:\Windows\System32
         copy ngrok.exe C:\Windows\System32
     - name: Configuring Ngrok...
@@ -21,9 +21,9 @@ jobs:
         NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
     - name: Downloading Scripts...
       run: |
-        Invoke-WebRequest https://raw.githubusercontent.com/vital987/windows-rdp/main/Files/ngrok.bat -OutFile ngrok.bat
-        Invoke-WebRequest https://raw.githubusercontent.com/vital987/windows-rdp/main/Files/main.bat -OutFile main.bat
-        Invoke-WebRequest https://raw.githubusercontent.com/vital987/windows-rdp/main/Files/loop.bat -OutFile loop.bat
+        Invoke-WebRequest https://raw.githubusercontent.com/vital987/Windows-RDP/master/Files/ngrok.bat -OutFile ngrok.bat
+        Invoke-WebRequest https://raw.githubusercontent.com/vital987/Windows-RDP/master/Files/main.bat -OutFile main.bat
+        Invoke-WebRequest https://raw.githubusercontent.com/vital987/Windows-RDP/master/Files/loop.bat -OutFile loop.bat
     - name: Configuring Ngrok...
       run: start ngrok.bat
     - name: Enabling RDP Access...
